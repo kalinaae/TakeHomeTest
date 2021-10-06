@@ -13,6 +13,7 @@
 ##     mu = the theoretical mean of the Normal distribution
 ##     sigma = the standard deviation of the Normal distribution
 ##     numbins = the number of bins for the histogram
+##     line width = the width of the mean vertical line
 ##     meanColor = the color for the overlaid mean
 ##     seed = a random number generator seed, to ensure
 ##            reproducibility
@@ -22,12 +23,12 @@
 ##     Mean_x = the sample mean of Random_values
 ##     SD_x = the sample standard deviation of Random_values
 
-plotRandomNormals <- function(numpts=1000, numbins=15, mu=24, sigma=3, meanColor= "red", seed=8675309) {
+plotRandomNormals <- function(numpts=1000, numbins=15, mu=24, sigma=3, meanColor= "red", seed=8675309, linewidth=2) {
   set.seed(seed)
   rand_x <- rnorm(numpts, mean=mu, sd=sigma)
   mean_x <- mean(rand_x)
   hist(rand_x, breaks=numbins)
-  abline(v=mean_x, col=meanColor)
+  abline(v=mean_x, col=meanColor, lwd=linewidth)
   list(Random_values = rand_x,
        Mean_x = mean_x,
        SD_x = sd(rand_x) )
@@ -35,5 +36,5 @@ plotRandomNormals <- function(numpts=1000, numbins=15, mu=24, sigma=3, meanColor
 
 ## Test the Function
 
-plotRandomNormals()
+plotRandomNormals(linewidth = 5)
 
