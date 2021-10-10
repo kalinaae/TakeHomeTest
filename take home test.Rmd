@@ -1,0 +1,120 @@
+---
+title: "Home Exam"
+author: "Ava Kalina"
+date: "10/6/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+Write a program that analyzes county population changes in Ohio. Specifically,
+
+Read the Ohio Population ACS data (link provided below) into R
+
+```{r}
+popData <- read.csv("2019agesex.csv")
+```
+
+Calculate the percentage change in the population of each Ohio county from the year 2010 to 2019 (YEARS == 3 and 12 in the data, respectively) and output a data frame with this information. 
+?filter
+
+```{r}
+popData1 <- popData %>% 
+  filter(YEAR == 3) %>% 
+  rename("2010Pop"=POPESTIMATE) %>% 
+  select(CTYNAME,"2010Pop")
+
+popData2 <- popData %>% 
+  filter(YEAR == 12) %>% 
+  rename("2019Pop"=POPESTIMATE) %>% 
+  select(CTYNAME, "2019Pop")
+
+pop.Data.per <- merge(popData2, popData1)
+
+pop.Data.per <- pop.Data.per %>% 
+  mutate(pct_change = ((`2019Pop` - `2010Pop`)/ `2010Pop`)*100)
+```
+
+Calculate the 3 counties with the highest increase in the percentage of total population and the 3 with the lowest percentage increase (a decrease would be a very low 'increase'). Not 5 counties, not 7 counties -- 3 counties. 
+
+```{r}
+pop.Data.per %>% 
+  arrange(desc(pct_change)) %>% 
+  slice(1:3)
+
+pop.Data.per %>% 
+  arrange(pct_change) %>% 
+  slice(1:3)
+```
+
+Also calculate the 3 counties with the highest increase in the percentage of population over age 65 and the 3 with the lowest rate of increase (a decrease would be a very low 'increase') in age over 65.
+
+```{r}
+popData.old <- popData %>% 
+  filter(YEAR == 3) %>% 
+  rename("2010Pop.65"=AGE65PLUS_TOT) %>% 
+  select(CTYNAME,"2010Pop.65")
+
+popData.old2 <- popData %>% 
+  filter(YEAR == 12) %>% 
+  rename("2019Pop.65"=AGE65PLUS_TOT) %>% 
+  select(CTYNAME, "2019Pop.65")
+
+pop.Data.65 <- merge(popData.old, popData.old2)
+
+pop.Data.65 <- pop.Data.65 %>% 
+  mutate(pct_change = ((`2019Pop.65` - `2010Pop.65`)/ `2010Pop.65`)*100)
+
+pop.Data.65 %>% 
+  arrange(desc(pct_change)) %>% 
+  slice(1:3)
+
+pop.Data.65 %>% 
+  arrange(pct_change) %>% 
+  slice(1:3)
+
+```
+
+Lastly, calculate the 3 counties with the highest increase in the percentage of population under age 20 and the 3 with the lowest rate of increase (a decrease would be a very low 'increase') in age under 20.
+
+```{r}
+popData.young <- popData %>% 
+  filter(YEAR == 3) %>% 
+  mutate("2010Pop.20" = POPESTIMATE - AGE04_TOT - AGE59_TOT - AGE1014_TOT - AGE1519_TOT) %>% 
+  select(CTYNAME,"2010Pop.20")
+
+popData.young2 <- popData %>% 
+  filter(YEAR == 12) %>% 
+  mutate("2019Pop.20" = POPESTIMATE - AGE04_TOT - AGE59_TOT - AGE1014_TOT - AGE1519_TOT) %>% 
+  select(CTYNAME, "2019Pop.20")
+
+pop.Data.20 <- merge(popData.young, popData.young2)
+
+pop.Data.20 <- pop.Data.20 %>% 
+  mutate(pct_change = ((`2019Pop.20` - `2010Pop.20`)/ `2010Pop.20`)*100)
+
+pop.Data.20 %>% 
+  arrange(desc(pct_change)) %>% 
+  slice(1:3)
+
+pop.Data.20 %>% 
+  arrange(pct_change) %>% 
+  slice(1:3)
+```
+
+Answer the following contextual question: What does this imply about Ohio's size and demographics?
+
+This program shows that Ohio's population is increasing, especially in more urban counties such as Delaware and Franklin County. Some counties, specifically Jefferson, Carroll and Monroe County have an overall declining population. We see that the population change in younger people is smaller than the change in the older category, indicating that most counties have an older population and younger people are not staying in the county that long. 
+
+Provide a short summary of what you learned contextually from the analysis in the program you wrote.
+
+Include this summary in the Readme.md file on your GitHub site.
+The Readme.md should have 1) a description of the program AND 2) a *short* summary of your analyses based on the program 
+
+
+
+
+
