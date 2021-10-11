@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-Write a program that analyzes county population changes in Ohio. Specifically,
+Write a program that analyzes county population changes in Ohio. Specifically:
 
 Read the Ohio Population ACS data (link provided below) into R
 
@@ -18,8 +18,7 @@ Read the Ohio Population ACS data (link provided below) into R
 popData <- read.csv("2019agesex.csv")
 ```
 
-Calculate the percentage change in the population of each Ohio county from the year 2010 to 2019 (YEARS == 3 and 12 in the data, respectively) and output a data frame with this information. 
-?filter
+Calculate the percentage change in the population of each Ohio county from the year 2010 to 2019 (YEARS == 3 and 12 in the data, respectively) and output a data frame with this information:
 
 ```{r}
 popData1 <- popData %>% 
@@ -41,11 +40,18 @@ pop.Data.per <- pop.Data.per %>%
 Calculate the 3 counties with the highest increase in the percentage of total population and the 3 with the lowest percentage increase (a decrease would be a very low 'increase'). Not 5 counties, not 7 counties -- 3 counties. 
 
 ```{r}
-pop.Data.per %>% 
+pop.Data.View <- pop.Data.per %>% 
+  select(CTYNAME, pct_change)
+
+#Counties with the highest percentage increase  
+
+pop.Data.View %>% 
   arrange(desc(pct_change)) %>% 
   slice(1:3)
 
-pop.Data.per %>% 
+#Counties with the lowest percentage increase
+
+pop.Data.View %>% 
   arrange(pct_change) %>% 
   slice(1:3)
 ```
@@ -68,11 +74,16 @@ pop.Data.65 <- merge(popData.old, popData.old2)
 pop.Data.65 <- pop.Data.65 %>% 
   mutate(pct_change = ((`2019Pop.65` - `2010Pop.65`)/ `2010Pop.65`)*100)
 
-pop.Data.65 %>% 
+pop.Data.65.View <- pop.Data.65 %>% 
+  select(CTYNAME, pct_change)
+
+#Counties with the highest increase in percent pop over age 65
+pop.Data.65.View %>% 
   arrange(desc(pct_change)) %>% 
   slice(1:3)
 
-pop.Data.65 %>% 
+#Counties with the lowest increase in percent pop over age 65
+pop.Data.65.View %>% 
   arrange(pct_change) %>% 
   slice(1:3)
 
@@ -96,11 +107,19 @@ pop.Data.20 <- merge(popData.young, popData.young2)
 pop.Data.20 <- pop.Data.20 %>% 
   mutate(pct_change = ((`2019Pop.20` - `2010Pop.20`)/ `2010Pop.20`)*100)
 
-pop.Data.20 %>% 
+
+pop.Data.20.View <- pop.Data.20 %>% 
+  select(CTYNAME, pct_change)
+
+#Counties with the highest increase in population percentage under age 20
+
+pop.Data.20.View %>% 
   arrange(desc(pct_change)) %>% 
   slice(1:3)
 
-pop.Data.20 %>% 
+#Counties with the lowest increase in population percentage under age 20
+
+pop.Data.20.View %>% 
   arrange(pct_change) %>% 
   slice(1:3)
 ```
